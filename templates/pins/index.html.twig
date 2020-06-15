@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pinterest Clone</title>
+</head>
+<body>
+    <h1>Pins Index</h1>
+    <a href="{{ path('app_pins_create') }}">Create Pin</a>
+    {% for pin in pins %}
+        <h3>{{ pin.title }}</h3>
+        <p>{{ pin.description }}</p>
+    {% endfor %}
+</body>
+</html>
