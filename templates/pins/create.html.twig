@@ -8,8 +8,11 @@
     <title>Pinterest Clone</title>
 </head>
 <body>
-<h1>Create Pin</h1>
 
-{{ form(form) }}
+<h1>Create Pin</h1>
+{{ form_start(form) }}
+{{ form_widget(form) }}
+<input type="submit" value="Create Pin">
+{{ form_end(form) }}
 </body>
 </html>
