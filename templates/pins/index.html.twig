@@ -13,6 +13,8 @@
     {% for pin in pins %}
         <h3>{{ pin.title }}</h3>
         <p>{{ pin.description }}</p>
+    {% else %}
+        <p>Sorry, no pins yet !</p>
     {% endfor %}
 </body>
 </html>

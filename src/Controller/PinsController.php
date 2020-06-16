@@ -40,8 +40,7 @@ class PinsController extends AbstractController
                 'attr' => ['autofocus' => true]
             ])
             ->add('description', TextareaType::class)
-            ->getForm()
-        ;
+            ->getForm();
 
         $form->handleRequest($request);
 
@@ -55,5 +54,18 @@ class PinsController extends AbstractController
         return $this->render('pins/create.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/pins/{id<[0-9]+>}")
+     * @param PinRepository $repo
+     * @param $id
+     * @return Response
+     */
+    public function show(PinRepository $repo, $id): Response
+    {
+        $pin = $repo->find($id);
+
+        return $this->render('pins/show.html.twig', compact('pin'));
     }
 }
