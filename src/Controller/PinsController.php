@@ -26,7 +26,7 @@ class PinsController extends AbstractController
     }
 
     /**
-     * @Route("/pins/create", name="app_pins_create", methods={"GET"})
+     * @Route("/pins/create", name="app_pins_create", methods={"GET", "POST"})
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
@@ -48,7 +48,7 @@ class PinsController extends AbstractController
             $em->persist($pin);
             $em->flush();
 
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_pins_show', ['id' => $pin->getId()]);
         }
 
         return $this->render('pins/create.html.twig', [

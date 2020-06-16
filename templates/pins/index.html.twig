@@ -11,8 +11,8 @@
     <h1>Pins Index</h1>
     <a href="{{ path('app_pins_create') }}">Create Pin</a>
     {% for pin in pins %}
-        <h3>{{ pin.title }}</h3>
-        <p>{{ pin.description }}</p>
+        <a href="{{ path('app_pins_show', {'id': pin.id}) }}"><h2>Pin #{{ pin.id }}</h2></a>
+        <h5>{{ pin.title }}- {{ pin.description }}</h5>
     {% else %}
         <p>Sorry, no pins yet !</p>
     {% endfor %}
