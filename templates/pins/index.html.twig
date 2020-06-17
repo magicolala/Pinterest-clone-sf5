@@ -1,20 +1,17 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pinterest Clone</title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
+
+{% block title %}Find all the best pins on earth !{% endblock %}
+
+{% block body %}
     <h1>Pins Index</h1>
     <a href="{{ path('app_pins_create') }}">Create Pin</a>
+    <h1>{{ pluralize(pins|length, 'Pin', 'Pins') }}</h1>
     {% for pin in pins %}
-        <a href="{{ path('app_pins_show', {'id': pin.id}) }}"><h2>Pin #{{ pin.id }}</h2></a>
-        <h5>{{ pin.title }}- {{ pin.description }}</h5>
+        <article>
+            <h2>{{ pin.title }}</h2>
+            <p>{{ pin.description }}</p>
+        </article>
     {% else %}
         <p>Sorry, no pins yet !</p>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
