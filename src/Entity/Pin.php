@@ -31,6 +31,11 @@ class Pin
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $imageFilename;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,6 +62,24 @@ class Pin
     {
         $this->description = $description;
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageFilename()
+    {
+        return $this->imageFilename;
+    }
+
+    /**
+     * @param mixed $imageFilename
+     * @return Pin
+     */
+    public function setImageFilename($imageFilename)
+    {
+        $this->imageFilename = $imageFilename;
         return $this;
     }
 }
