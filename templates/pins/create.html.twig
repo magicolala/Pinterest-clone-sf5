@@ -1,18 +1,11 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pinterest Clone</title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
 
-<h1>Create Pin</h1>
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<input type="submit" value="Create Pin">
-{{ form_end(form) }}
-</body>
-</html>
+{% block title %}New Pin{% endblock %}
+
+{% block body %}
+    <h1>Create Pin</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" value="Create Pin">
+    {{ form_end(form) }}
+{% endblock body %}
