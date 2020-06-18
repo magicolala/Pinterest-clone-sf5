@@ -36,6 +36,11 @@ class Pin
      */
     private $imageFilename;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="pins")
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +85,18 @@ class Pin
     public function setImageFilename($imageFilename)
     {
         $this->imageFilename = $imageFilename;
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
         return $this;
     }
 }
