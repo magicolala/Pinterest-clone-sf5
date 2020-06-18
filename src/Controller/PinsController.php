@@ -4,15 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Liked;
 use App\Entity\Pin;
+use App\Entity\User;
 use App\Form\PinType;
 use App\Repository\LikedRepository;
 use App\Repository\PinRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +28,19 @@ class PinsController extends AbstractController
     public function index(PinRepository $repo): Response
     {
         return $this->render('pins/index.html.twig', ['pins' => $repo->findBy([], ['createdAt' => 'DESC'])]);
+    }
+
+    /**
+     * @Route("/pin-user/{id<[0-9]+>}", name="app_pins_user")
+     * @param User $id
+     * @param PinRepository $repo
+     * @return Response
+     */
+    public function indexUser(User $id, PinRepository $repo): Response
+    {
+        $pins = $repo->findBy(['createdBy' => $id]);
+
+        return $this->render('pins/index-user.html.twig', ['pins' => $pins, 'user' => $id]);
     }
 
     /**

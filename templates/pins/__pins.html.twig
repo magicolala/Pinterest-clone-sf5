@@ -1,0 +1,38 @@
+<div class="col-xl-3 col-sm-6 mb-3 grid-item">
+    <div class="video-card">
+        <div class="video-card-image">
+            <a class="play-icon" href="{{ path('app_pins_show', {'id': pin.id}) }}">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+            </a>
+            <a href="#">
+                <img class="img-fluid" src="{{ asset('uploads/images/' ~ pin.imageFilename) }}" alt="">
+            </a>
+            {#                            <div class="time">3:50</div>#}
+        </div>
+        <div class="video-card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="video-title">
+                        <a href="#">{{ pin.title }}</a>
+                    </div>
+                    <div class="video-page text-success">
+                        <a href="#">{{ pin.category.name }}</a>
+                    </div>
+                    <div class="video-view">
+                        Created&nbsp;<i class="fas fa-calendar-alt"></i>&nbsp;{{ pin.createdAt|date|ago }}&nbsp;by&nbsp;<a
+                                href="{{ path('app_pins_user', {'id': app.user.id}) }}">{{ pin.createdBy }}</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    {% if app.user %}
+                        {% if pin.isLiked(app.user) %}
+                            <i class="fa fa-heart float-right liked" aria-hidden="true" data-pinid="{{ pin.id }}"></i>
+                        {% else %}
+                            <i class="fa fa-heart float-right not-liked" aria-hidden="true" data-pinid="{{ pin.id }}"></i>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
