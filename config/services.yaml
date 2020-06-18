@@ -6,6 +6,7 @@
 parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'
     locale: 'fr'
+    doctrine_behaviors_blameable_user_entity: App\Entity\User
 
 services:
     # default configuration for services in *this* file

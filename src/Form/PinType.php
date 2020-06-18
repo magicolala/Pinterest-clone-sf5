@@ -16,6 +16,7 @@ class PinType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+            ->add('category')
             ->add('image', FileType::class, [
                 'label' => 'Image (file)',
 

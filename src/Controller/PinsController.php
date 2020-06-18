@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Liked;
 use App\Entity\Pin;
 use App\Form\PinType;
+use App\Repository\LikedRepository;
 use App\Repository\PinRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -132,5 +136,48 @@ class PinsController extends AbstractController
         }
 
         return $this->redirectToRoute('app_home');
+    }
+
+    /**
+     * @Route("/likePin", name="likePinAjax")
+     * @param Request $request
+     * @param PinRepository $pinRepository
+     * @param UserRepository $userRepository
+     * @return JsonResponse
+     */
+    public function likePin(Request $request, PinRepository $pinRepository, UserRepository $userRepository): JsonResponse
+    {
+        $id = $request->query->get('id');
+        $pin = $pinRepository->find($id);
+        $user = $userRepository->find($this->getUser()->getId());
+
+        $like = new Liked();
+        $like->setPin($pin);
+        $like->setUser($user);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($like);
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @Route("/unlikePin", name="unlikePinAjax")
+     * @param Request $request
+     * @param LikedRepository $likedRepository
+     * @param PinRepository $pinRepository
+     * @return JsonResponse
+     */
+    public function unlikePin(Request $request, LikedRepository $likedRepository, PinRepository $pinRepository): JsonResponse
+    {
+        $id = $request->query->get('id');
+        $like = $likedRepository->findOneBy(['pin' => $id, 'user' => $this->getUser()]);
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($like);
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
     }
 }

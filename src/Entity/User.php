@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +41,21 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Liked", mappedBy="user")
+     */
+    private $likeds;
+
+    public function __construct()
+    {
+        $this->likeds = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return (string)$this->username;
+    }
 
     public function getId(): ?int
     {
@@ -94,7 +110,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -119,5 +135,47 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function addLiked(Liked $liked): self
+    {
+        if (!$this->likeds->contains($liked)) {
+            $this->likeds[] = $liked;
+            $liked->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiked(Liked $liked): self
+    {
+        if ($this->likeds->contains($liked)) {
+            $this->likeds->removeElement($liked);
+            // set the owning side to null (unless already changed)
+            if ($liked->getUser() === $this) {
+                $liked->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLikedPins()
+    {
+        $likes = $this->getLikeds();
+        $pins = [];
+        foreach ($likes as $like) {
+            $pins[] = $like->getTrack();
+        }
+
+        return $pins;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLikeds(): ArrayCollection
+    {
+        return $this->likeds;
     }
 }

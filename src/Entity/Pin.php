@@ -4,15 +4,19 @@ namespace App\Entity;
 
 use App\Entity\Traits\Timestampable;
 use App\Repository\PinRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Contract\Entity\BlameableInterface;
+use Knp\DoctrineBehaviors\Model\Blameable\BlameableTrait;
 
 /**
  * @ORM\Entity(repositoryClass=PinRepository::class)
  * @ORM\HasLifecycleCallbacks()
  */
-class Pin
+class Pin implements BlameableInterface
 {
     use Timestampable;
+    use BlameableTrait;
 
     /**
      * @ORM\Id()
@@ -40,6 +44,16 @@ class Pin
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="pins")
      */
     private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Liked", mappedBy="pin")
+     */
+    private $likeds;
+
+    public function __construct()
+    {
+        $this->likeds = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +112,46 @@ class Pin
         $this->category = $category;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLikeds(): ArrayCollection
+    {
+        return $this->likeds;
+    }
+
+    public function addLiked(Liked $liked): self
+    {
+        if (!$this->likeds->contains($liked)) {
+            $this->likeds[] = $liked;
+            $liked->setPin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiked(Liked $liked): self
+    {
+        if ($this->likeds->contains($liked)) {
+            $this->likeds->removeElement($liked);
+            // set the owning side to null (unless already changed)
+            if ($liked->getPin() === $this) {
+                $liked->setPin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIsLiked($user) {
+        foreach ($this->likeds as $like) {
+            if ($like->getUser()->getId() === $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

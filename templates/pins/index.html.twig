@@ -8,7 +8,8 @@
             <div class="col-md-12">
                 <div class="main-title">
                     <div class="btn-group float-right right-action">
-                        <a href="#" class="right-action-link text-gray" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" class="right-action-link text-gray" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false">
                             Sort by <i class="fa fa-caret-down" aria-hidden="true"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -20,23 +21,43 @@
                     <h6>{{ pins|length }} pins</h6>
                 </div>
             </div>
+        </div>
+        <div class="row grid">
+            <div class="grid-sizer col-xl-3 col-sm-6"></div>
             {% for pin in pins %}
-                <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="col-xl-3 col-sm-6 mb-3 grid-item">
                     <div class="video-card">
                         <div class="video-card-image">
-                            <a class="play-icon" href="#"><i class="far fa-eye"></i></a>
-                            <a href="#"><img class="img-fluid" src="{{ asset('uploads/images/' ~ pin.imageFilename) }}" alt=""></a>
-{#                            <div class="time">3:50</div>#}
+                            <a class="play-icon" href="{{ path('app_pins_show', {'id': pin.id}) }}">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                            <a href="#">
+                                <img class="img-fluid" src="{{ asset('uploads/images/' ~ pin.imageFilename) }}" alt="">
+                            </a>
+                            {#                            <div class="time">3:50</div>#}
                         </div>
                         <div class="video-card-body">
-                            <div class="video-title">
-                                <a href="#">{{ pin.title }}</a>
-                            </div>
-                            <div class="video-page text-success">
-                                <a href="#">{{ pin.category.name }}</a>
-                            </div>
-                            <div class="video-view">
-                                1.8M views &nbsp;<i class="fas fa-calendar-alt"></i> {{ pin.createdAt|date|ago }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="video-title">
+                                        <a href="#">{{ pin.title }}</a>
+                                    </div>
+                                    <div class="video-page text-success">
+                                        <a href="#">{{ pin.category.name }}</a>
+                                    </div>
+                                    <div class="video-view">
+                                        Created&nbsp;<i class="fas fa-calendar-alt"></i>&nbsp;{{ pin.createdAt|date|ago }}&nbsp;by&nbsp;{{ pin.createdBy }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if app.user %}
+                                        {% if pin.isLiked(app.user) %}
+                                            <i class="fa fa-heart float-right liked" aria-hidden="true" data-pinid="{{ pin.id }}"></i>
+                                        {% else %}
+                                            <i class="fa fa-heart float-right not-liked" aria-hidden="true" data-pinid="{{ pin.id }}"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -44,15 +65,46 @@
             {% endfor %}
         </div>
     </div>
-{#    <h1>Pins Index</h1>#}
-{#    <a href="{{ path('app_pins_create') }}">Create Pin</a>#}
-{#    <h1>{{ pluralize(pins|length, 'Pin', 'Pins') }}</h1>#}
-{#    {% for pin in pins %}#}
-{#        <article>#}
-{#            <h2><a href="{{ path('app_pins_show', {'id': pin.id}) }}">{{ pin.title }}</a></h2>#}
-{#            <p>{{ pin.description }}</p>#}
-{#        </article>#}
-{#    {% else %}#}
-{#        <p>Sorry, no pins yet !</p>#}
-{#    {% endfor %}#}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.grid').masonry({
+                itemSelector: '.grid-item', // use a separate class for itemSelector, other than .col-
+                columnWidth: '.grid-sizer',
+                percentPosition: true
+            });
+        });
+
+        $('body').on('click', '.liked', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const elem = $(this);
+            const id = elem.data('pinid');
+            elem.removeClass('liked');
+            elem.addClass('not-liked');
+            $.ajax({
+                type: "POST",
+                url: "{{ path('unlikePinAjax') }}" + "?id=" + id,
+                success: function (response) {
+                }
+            });
+        });
+
+        $('body').on('click', '.not-liked', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const elem = $(this);
+            const id = elem.data('pinid');
+            elem.removeClass('not-liked');
+            elem.addClass('liked');
+            $.ajax({
+                type: "POST",
+                url: "{{ path('likePinAjax') }}" + "?id=" + id,
+                success: function (response) {
+                }
+            });
+        });
+    </script>
 {% endblock %}
