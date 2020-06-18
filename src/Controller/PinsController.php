@@ -191,4 +191,25 @@ class PinsController extends AbstractController
 
         return new JsonResponse(['success' => true]);
     }
+
+    /**
+     * @Route("pin/filters", name="app_filters_pin")
+     * @param PinRepository $repo
+     * @return JsonResponse
+     */
+    public function filters(PinRepository $repo): JsonResponse
+    {
+        $pins = $repo->findBy([], ['likeds' => 'DESC']);
+
+        $html = $this->render("pins/__pins.html.twig", [
+            'pins' => $pins
+        ])->getContent();
+
+        $response = [
+            'code' => 200,
+            'html' => $html
+        ];
+
+        return new JsonResponse($response);
+    }
 }
